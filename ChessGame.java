@@ -2,11 +2,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.net.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.*;
 
 public class ChessGame extends Frame {
     private final int BOARD_SIZE = 8;
-    private Button[][] board = new Button[BOARD_SIZE][BOARD_SIZE];
+    private JButton[][] board = new JButton[BOARD_SIZE][BOARD_SIZE];
     private ChessPiece[][] pieces = new ChessPiece[BOARD_SIZE][BOARD_SIZE]; // ChessPiece array to track piece positions
     private String currentPlayer = "White";
     private ChessPiece selectedPiece = null;
@@ -15,9 +17,13 @@ public class ChessGame extends Frame {
     private Socket socket; // Socket for network communication
     private PrintWriter out; // Output stream for sending moves
     private BufferedReader in; // Input stream for receiving moves
+    
+    // Declare pieceImages as a Map to hold images
+    private Map<String, Image> pieceImages = new HashMap<>();
 
     public ChessGame(String serverAddress, int port) {
         setLayout(new GridLayout(BOARD_SIZE, BOARD_SIZE));
+        loadPieceImages(); // Call to load images
         initializeBoard();
         initializePieces();
         setSize(640, 640);
@@ -30,11 +36,30 @@ public class ChessGame extends Frame {
         new Thread(this::listenForOpponentMove).start();
     }
 
+    // Load piece images from local storage
+    private void loadPieceImages() {
+        // Load black piece images
+        pieceImages.put("BlackPawn", Toolkit.getDefaultToolkit().getImage("black-pawn.png"));
+        pieceImages.put("BlackRook", Toolkit.getDefaultToolkit().getImage("black-rook.png"));
+        pieceImages.put("BlackKnight", Toolkit.getDefaultToolkit().getImage("black-knight.png"));
+        pieceImages.put("BlackBishop", Toolkit.getDefaultToolkit().getImage("black-bishop.png"));
+        pieceImages.put("BlackQueen", Toolkit.getDefaultToolkit().getImage("black-queen.png"));
+        pieceImages.put("BlackKing", Toolkit.getDefaultToolkit().getImage("black-king.png"));
+        
+        // Load white piece images
+        pieceImages.put("WhitePawn", Toolkit.getDefaultToolkit().getImage("black-pawn.png"));
+        pieceImages.put("WhiteRook", Toolkit.getDefaultToolkit().getImage("black-rook.png"));
+        pieceImages.put("WhiteKnight", Toolkit.getDefaultToolkit().getImage("black-knight.png"));
+        pieceImages.put("WhiteBishop", Toolkit.getDefaultToolkit().getImage("black-bishop.png"));
+        pieceImages.put("WhiteQueen", Toolkit.getDefaultToolkit().getImage("black-queen.png"));
+        pieceImages.put("WhiteKing", Toolkit.getDefaultToolkit().getImage("black-king.png"));
+    }
+
     // Initialize the GUI Board
     private void initializeBoard() {
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int col = 0; col < BOARD_SIZE; col++) {
-                board[row][col] = new Button();
+                board[row][col] = new JButton();
                 board[row][col].setActionCommand(row + "," + col);
                 board[row][col].addActionListener(e -> handleMove(e));
 
@@ -82,16 +107,28 @@ public class ChessGame extends Frame {
 
     // Updates the button text to reflect piece positions
     private void updateBoardUI() {
-        for (int row = 0; row < BOARD_SIZE; row++) {
-            for (int col = 0; col < BOARD_SIZE; col++) {
-                if (pieces[row][col] != null) {
-                    board[row][col].setLabel(pieces[row][col].getClass().getSimpleName());
-                } else {
-                    board[row][col].setLabel("");
-                }
-            }
-        }
-    }
+		int iconHeight = 40; // Set the desired height for the pieces
+		int iconWidth = 40;  // Set the desired width for the pieces (can be adjusted)
+
+		for (int row = 0; row < BOARD_SIZE; row++) {
+			for (int col = 0; col < BOARD_SIZE; col++) {
+				JButton button = board[row][col]; // Change Button to JButton
+				ChessPiece piece = pieces[row][col];
+
+				if (piece != null) {
+					String key = piece.getColor() + piece.getClass().getSimpleName();
+					Image originalImage = pieceImages.get(key);
+					if (originalImage != null) {
+						Image scaledImage = originalImage.getScaledInstance(iconWidth, iconHeight, Image.SCALE_SMOOTH);
+						button.setIcon(new ImageIcon(scaledImage)); // Set the resized icon
+					}
+				} else {
+					button.setIcon(null); // Clear the icon if no piece
+				}
+			}
+		}
+	}
+
 
     // Handles the move logic when a button is clicked
     private void handleMove(ActionEvent e) {
