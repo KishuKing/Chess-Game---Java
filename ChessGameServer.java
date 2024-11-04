@@ -1,12 +1,18 @@
 import java.io.*;
 import java.net.*;
 
-public class ChessGameServer {
-    private static final int PORT = 12345;
+public class ChessGameServer implements Runnable {
+    private int PORT;
 
-    public static void main(String[] args) {
+    // Constructor to set the PORT
+    public ChessGameServer(int portInput) {
+        this.PORT = portInput > 0 ? portInput : 12345; // Set to default if invalid port is provided
+    }
+
+    @Override
+    public void run() {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Chess server started. Waiting for players...");
+            System.out.println("Chess server started on port " + PORT + ". Waiting for players...");
 
             // Accept two player connections
             Socket player1 = serverSocket.accept();
