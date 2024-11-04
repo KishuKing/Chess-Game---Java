@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.*;
 
-public class ChessGame extends Frame {
+public class ChessGame extends JFrame {
     private final int BOARD_SIZE = 8;
     private JButton[][] board = new JButton[BOARD_SIZE][BOARD_SIZE];
     private ChessPiece[][] pieces = new ChessPiece[BOARD_SIZE][BOARD_SIZE]; // ChessPiece array to track piece positions
@@ -27,6 +27,7 @@ public class ChessGame extends Frame {
         initializeBoard();
         initializePieces();
         setSize(640, 640);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
 
         // Connect to the server
@@ -47,12 +48,12 @@ public class ChessGame extends Frame {
         pieceImages.put("BlackKing", Toolkit.getDefaultToolkit().getImage("black-king.png"));
         
         // Load white piece images
-        pieceImages.put("WhitePawn", Toolkit.getDefaultToolkit().getImage("black-pawn.png"));
-        pieceImages.put("WhiteRook", Toolkit.getDefaultToolkit().getImage("black-rook.png"));
-        pieceImages.put("WhiteKnight", Toolkit.getDefaultToolkit().getImage("black-knight.png"));
-        pieceImages.put("WhiteBishop", Toolkit.getDefaultToolkit().getImage("black-bishop.png"));
-        pieceImages.put("WhiteQueen", Toolkit.getDefaultToolkit().getImage("black-queen.png"));
-        pieceImages.put("WhiteKing", Toolkit.getDefaultToolkit().getImage("black-king.png"));
+        pieceImages.put("WhitePawn", Toolkit.getDefaultToolkit().getImage("white-pawn.png"));
+        pieceImages.put("WhiteRook", Toolkit.getDefaultToolkit().getImage("white-rook.png"));
+        pieceImages.put("WhiteKnight", Toolkit.getDefaultToolkit().getImage("white-knight.png"));
+        pieceImages.put("WhiteBishop", Toolkit.getDefaultToolkit().getImage("white-bishop.png"));
+        pieceImages.put("WhiteQueen", Toolkit.getDefaultToolkit().getImage("white-queen.png"));
+        pieceImages.put("WhiteKing", Toolkit.getDefaultToolkit().getImage("white-king.png"));
     }
 
     // Initialize the GUI Board
@@ -112,7 +113,7 @@ public class ChessGame extends Frame {
 
 		for (int row = 0; row < BOARD_SIZE; row++) {
 			for (int col = 0; col < BOARD_SIZE; col++) {
-				JButton button = board[row][col]; // Change Button to JButton
+				JButton button = board[row][col];
 				ChessPiece piece = pieces[row][col];
 
 				if (piece != null) {
